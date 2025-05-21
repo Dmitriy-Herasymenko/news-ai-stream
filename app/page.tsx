@@ -1,14 +1,7 @@
 import NewsList from "./components/NewsList";
 import { fetchNews } from "./api/fetchNews";
 
-async function getNews() {
-  const res = await fetch(
-    `https://newsapi.org/v2/top-headlines?country=us&apiKey=${process.env.NEWS_API_KEY}`
-  );
-  console.log("res", res);
-  if (!res.ok) throw new Error("Failed to fetch news");
-  return res.json();
-}
+
 
 export default async function Home() {
   let articles = [];
