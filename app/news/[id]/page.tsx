@@ -9,9 +9,9 @@ type ArticleDetailProps = {
   };
 };
 
-async function fetchNewsDetail(id: string) {
+async function fetchNewsDetail(params: string) {
   const res = await fetch(
-    `https://newsapi.org/v2/everything?q=${id}&apiKey=${process.env.NEWS_API_KEY}`,
+    `https://newsapi.org/v2/everything?q=${params.id}&apiKey=${process.env.NEWS_API_KEY}`,
     { cache: 'no-store' } // 👈 обов'язково для SSR
   );
 

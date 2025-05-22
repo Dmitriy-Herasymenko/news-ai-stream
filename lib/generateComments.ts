@@ -1,13 +1,13 @@
 export async function generateCommentsCohereChat(articleTitle: string, articleSummary: string) {
   const prompt = `
-  Створи кожен раз рандому кількість від 3 до 100 коротких коментарів до новини з заголовком "${articleTitle}" і описом "${articleSummary}".
+  Створи кожен раз рандомну кількість від 3 до 10 коротких коментарів до новини з заголовком "${articleTitle}" і описом "${articleSummary}".
   Коментарі повинні виглядати як справжні — різні стилі, різні точки зору. Виведи список у форматі:
 
   1. Ім'я: Коментар
   2. ...
   `;
 
-  const res = await fetch('https://api.cohere.ai/v1/chat', {
+  const cohereRes = await fetch('https://api.cohere.ai/v1/chat', {
     method: 'POST',
     headers: {
       'Authorization': `Bearer ${process.env.COHERE_API_KEY}`,
@@ -22,27 +22,32 @@ export async function generateCommentsCohereChat(articleTitle: string, articleSu
     })
   });
 
-  if (!res.ok) {
-    const text = await res.text();
+  if (!cohereRes.ok) {
+    const text = await cohereRes.text();
     console.error('Cohere API error response:', text);
-    throw new Error(`Cohere API error: ${res.status} ${res.statusText}`);
+    throw new Error(`Cohere API error: ${cohereRes.status} ${cohereRes.statusText}`);
   }
 
-  const data = await res.json();
-  const text = data.text;
+  const cohereData = await cohereRes.json();
+  const rawComments = cohereData.text?.split(/\n\d+\.\s/).filter(Boolean);
 
-  // Розбираємо текст на окремі коментарі
-  return text?.split(/\n\d+\.\s/).filter(Boolean).map(line => {
+  if (!rawComments || rawComments.length === 0) return [];
+
+  // Запитуємо стільки фейкових користувачів, скільки коментарів
+  const userRes = await fetch(`https://randomuser.me/api/?results=${rawComments.length}&nat=us,gb,ua`);
+  const userData = await userRes.json();
+
+  return rawComments.map((line, index) => {
     const [namePart, ...rest] = line.split(':');
-    const name = (namePart?.trim() || 'Анонім').replace(/[^a-zA-Zа-яА-ЯёЁіІїЇґҐєЄ0-9\s]/g, '');
     const comment = rest.join(':').trim();
 
-    // Генеруємо URL до аватарки
-    const avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=random&size=128`;
+    const user = userData.results[index];
+    const name = `${user.name.first} ${user.name.last}`;
+    const avatar = user.picture.medium;
 
     return {
       name,
-      avatar: avatarUrl,
+      avatar,
       comment
     };
   });
