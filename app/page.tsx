@@ -1,7 +1,6 @@
-import NewsList from "./components/NewsList";
+import NewsList from "./components/NewsList/NewsList";
+import CategoriesMenu from "./components/CategoriesMenu/CategoriesMenu";
 import { fetchNews } from "./api/fetchNews";
-
-
 
 export default async function Home() {
   let articles = [];
@@ -13,10 +12,8 @@ export default async function Home() {
   }
 
   return (
-    <main className="max-w-4xl mx-auto p-6">
-<h2 className="text-3xl font-bold border-l-4 border-red-600 pl-4 mb-6 text-gray-900">
-  Головні новини
-</h2>
+    <main className="max-w-8xl mx-auto p-6">
+      <CategoriesMenu />
       {articles.length > 0 ? (
         <NewsList articles={articles} />
       ) : (
