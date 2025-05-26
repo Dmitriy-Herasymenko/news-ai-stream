@@ -1,54 +1,47 @@
-export async function translateTextToUkrCohere(text: string): Promise<string> {
-    const COHERE_API_KEY = process.env.COHERE_API_KEY;
-  
-    if (!COHERE_API_KEY) {
-      throw new Error('Missing COHERE_API_KEY');
-    }
-  
-    const cleanText = text?.trim() ?? '';
-    if (cleanText.length === 0) {
-      throw new Error('Text for translation is empty or only whitespace');
-    }
-  
-    // Додатково можна дати паузу між запитами (наприклад, 700 мс)
-    await new Promise((resolve) => setTimeout(resolve, 700));
-  
-    const body = {
-      model: 'chat-xlarge-nightly',  // обов’язково чат-модель
-      messages: [
-        {
-          role: 'system',
-          content: 'You are a helpful assistant that translates any text to Ukrainian.'
-        },
-        {
-          role: 'user',
-          content: cleanText
-        }
-      ],
-      temperature: 0.3,
-      max_tokens: 200,
-    };
-  
-    console.log('Request body to Cohere:', JSON.stringify(body, null, 2));
-  
-    const res = await fetch('https://api.cohere.ai/chat', {
+// pages/api/translate.ts
+import type { NextApiRequest, NextApiResponse } from 'next';
+
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  const { text, targetLang } = req.body;
+
+  if (!text || !targetLang) {
+    return res.status(400).json({ error: 'Missing text or targetLang' });
+  }
+
+  try {
+    const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${COHERE_API_KEY}`,
         'Content-Type': 'application/json',
+        'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
       },
-      body: JSON.stringify(body),
+      body: JSON.stringify({
+        model: 'gpt-4o-mini',
+        messages: [
+          {
+            role: 'system',
+            content: `You are a helpful translator. Translate the following text to ${targetLang} without adding extra explanation.`,
+          },
+          {
+            role: 'user',
+            content: text,
+          },
+        ],
+      }),
     });
-  
-    if (!res.ok) {
-      const errorText = await res.text();
-      console.error('Cohere API error:', errorText);
-      throw new Error(`Cohere API error: ${res.status} ${res.statusText}`);
+
+    if (!response.ok) {
+      const errorDetails = await response.text();
+      console.error('OpenAI API error:', errorDetails);
+      return res.status(response.status).json({ error: 'Translation failed' });
     }
-  
-    const data = await res.json();
-    console.log('Cohere response data:', data);
-  
-    return data.choices[0].message.content.trim();
+
+    const data = await response.json();
+    const translatedText = data.choices?.[0]?.message?.content || text;
+
+    res.status(200).json({ translatedText });
+  } catch (error) {
+    console.error('Unexpected error:', error);
+    res.status(500).json({ error: 'Translation failed' });
   }
-  
+}
