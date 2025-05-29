@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import NewsList from "./components/NewsList/NewsList";
 import CategoriesMenu from "./components/CategoriesMenu/CategoriesMenu";
+import WeatherWidget from './components/WeatherWidget/WeatherWidget';
 import { fetchNews } from "./api/fetchNews";
 
 export default function Home() {
@@ -15,9 +16,9 @@ export default function Home() {
       try {
         const data = await fetchNews(category);
         setArticles(data);
-        console.log("data page", data)
+
       } catch (error) {
-        console.error("Error fetching news:", error);
+      
         setArticles([]);
       } finally {
         setLoading(false);
@@ -32,9 +33,18 @@ console.log("articles", articles)
       <CategoriesMenu currentCategorySlug={category} onCategoryChange={setCategory} />
 
       {loading ? (
+
         <p className="text-center text-gray-500">Loading...</p>
       ) : articles?.length > 0 ? (
+        <div className="flex gap-12 justify-center">
+
         <NewsList articles={articles} />
+
+        <div>
+          <WeatherWidget />
+          </div>
+        </div>
+
       ) : (
         <p className="text-center text-gray-500">No news available</p>
       )}

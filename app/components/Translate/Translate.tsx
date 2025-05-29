@@ -9,7 +9,7 @@ export function Translate({ text, targetLang }: TranslateProps) {
   const [translated, setTranslated] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
+  console.log('OPENAI_API_KEY:', process.env.NEXT_PUBLIC_OPENAI_API_KEY);
   useEffect(() => {
     if (!text) {
       setTranslated(null);
