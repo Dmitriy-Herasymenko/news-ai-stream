@@ -50,13 +50,13 @@ export default function WeatherWidget() {
     );
   }, []);
 
-  if (loading) return <div className="text-sm text-gray-500">Завантаження погоди...</div>;
-  if (!weather) return <div className="text-sm text-red-500">Немає даних про погоду</div>;
+  if (loading) return <div className="text-sm text-gray-500">Loading weather...</div>;
+  if (!weather) return <div className="text-sm text-red-500">No weather data</div>;
 
   return (
-    <div className="bg-[#f5f5f5] border-t-4 border-red-600 shadow-md p-4 max-w-[350px]">
+    <div className="bg-[#f5f5f5] border-t-4 border-red-600 shadow-md p-4 max-w-[450px]">
       <h3 className="text-xl font-bold text-black uppercase mb-3 border-b border-gray-300 pb-1">
-        Погода: {weather.city}
+        Weather: {weather.city}
       </h3>
       <div className="flex items-center gap-4">
         <img

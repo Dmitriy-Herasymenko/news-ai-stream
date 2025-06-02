@@ -27,7 +27,6 @@ export default function Home() {
 
     loadNews();
   }, [category]);
-console.log("articles", articles)
   return (
     <main className="max-w-8xl mx-auto p-6">
       <CategoriesMenu currentCategorySlug={category} onCategoryChange={setCategory} />
@@ -40,7 +39,7 @@ console.log("articles", articles)
 
         <NewsList articles={articles} />
 
-        <div>
+          <div>
           <WeatherWidget />
           </div>
         </div>
