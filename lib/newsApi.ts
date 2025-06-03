@@ -1,7 +1,7 @@
 import { translateTextToUkrCohere } from './translate';
 
 const NEWS_API_KEY = process.env.NEWS_API_KEY;
-const NEWS_API_URL = 'https://newsapi.org/v2/top-headlines?country=ua&language=uk';
+const NEWS_API_URL = 'https://newsapi.org/v2/top-headlines?country=ua&language=ua';
 
 export interface Article {
   source: { id: string | null; name: string };

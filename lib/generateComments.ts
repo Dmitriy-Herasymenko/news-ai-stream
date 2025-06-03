@@ -1,7 +1,7 @@
-export async function generateCommentsCohereChat(articleTitle: string, articleSummary: string) {
+export async function generateCommentsCohereChat(articleTitle: string, articleSummary: string, language: string) {
   const prompt = `
   Створи кожен раз рандомну кількість від 3 до 10 коротких коментарів до новини з заголовком "${articleTitle}" і описом "${articleSummary}".
-  Коментарі повинні виглядати як справжні — різні стилі, різні точки зору. Виведи список у форматі:
+  Коментарі повинні бути на ${language || "uk"} мові та виглядати як справжні — різні стилі, різні точки зору. Виведи список у форматі:
 
   1. Ім'я: Коментар
   2. ...
