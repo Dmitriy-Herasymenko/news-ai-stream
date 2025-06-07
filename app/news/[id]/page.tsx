@@ -34,7 +34,7 @@ async function fetchRelatedNews(query: string) {
   return data.articles || [];
 }
 
-export default async function NewsDetail({ params }: ArticleDetailProps) {
+export default async function NewsDetail({ params }: any) {
   if (!params?.id) return notFound();
 
   const article = await fetchNewsDetail(params.id);
@@ -70,7 +70,7 @@ export default async function NewsDetail({ params }: ArticleDetailProps) {
       <div className="mb-10">
         <h3 className="font-semibold text-gray-700 mb-2">Теги:</h3>
         <div className="flex flex-wrap gap-2">
-          {tags.map((tag, i) => (
+          {tags.map((tag:any, i:any) => (
             <span
               key={i}
               className="bg-gray-200 text-gray-700 px-3 py-1 rounded-full text-sm cursor-pointer hover:bg-red-600 hover:text-white transition"
@@ -116,7 +116,7 @@ export default async function NewsDetail({ params }: ArticleDetailProps) {
         </h2>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {relatedNews.map((news, i) => (
+          {relatedNews.map((news:any, i:any) => (
             <a
               key={i}
               href={news.url}

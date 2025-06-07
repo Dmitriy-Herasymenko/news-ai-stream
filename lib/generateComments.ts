@@ -1,4 +1,4 @@
-export async function generateCommentsCohereChat(articleTitle: string, articleSummary: string, language: string) {
+export async function generateCommentsCohereChat(articleTitle?: string, articleSummary?: string, language?: string) {
   const prompt = `
   Створи кожен раз рандомну кількість від 3 до 10 коротких коментарів до новини з заголовком "${articleTitle}" і описом "${articleSummary}".
   Коментарі повинні бути на ${language || "uk"} мові та виглядати як справжні — різні стилі, різні точки зору. Виведи список у форматі:
@@ -37,7 +37,7 @@ export async function generateCommentsCohereChat(articleTitle: string, articleSu
   const userRes = await fetch(`https://randomuser.me/api/?results=${rawComments.length}&nat=us,gb,ua`);
   const userData = await userRes.json();
 
-  return rawComments.map((line, index) => {
+  return rawComments.map((line:any, index:any) => {
     const [namePart, ...rest] = line.split(':');
     const comment = rest.join(':').trim();
 
