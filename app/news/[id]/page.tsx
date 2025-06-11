@@ -5,9 +5,9 @@ import ClientCommentsWrapper from "../../components/ClientCommentsWrapper";
 
 
 type ArticleDetailProps = {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 };
 
 async function fetchNewsDetail(id: string) {
@@ -34,12 +34,14 @@ async function fetchRelatedNews(query: string) {
   return data.articles || [];
 }
 
-export default async function NewsDetail({ params }: any) {
-  if (!params?.id) return notFound();
+export default async function NewsDetail({ params }: ArticleDetailProps) {
+   
+  const { id: currentId } = await params;
+  if (!currentId) return notFound();
 
-  const article = await fetchNewsDetail(params.id);
+  const article = await fetchNewsDetail(currentId);
   if (!article) return notFound();
-
+console.log("params", await params)
   const relatedNews = await fetchRelatedNews(article.title);
   const tags = article.title.split(" ").slice(0, 5);
 
@@ -130,7 +132,7 @@ export default async function NewsDetail({ params }: any) {
                   alt={news.title}
                   className="w-full h-40 object-cover"
                 />
-              )}
+              )} 
               <div className="p-4">
                 <h3 className="text-lg font-semibold text-gray-900">
                   {news.title}
