@@ -30,7 +30,7 @@ export default function WeatherWidget() {
           const data = await res.json();
 
           const weatherInfo: WeatherData = {
-            temperature: Math.round(data.main.temp),
+            temperature: Math.round(data.main.temp), 
             description: data.weather[0].description,
             icon: data.weather[0].icon,
             city: data.name,

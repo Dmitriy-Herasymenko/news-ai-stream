@@ -1,10 +1,11 @@
-'use client';
+"use client";
 
 import { useState, useEffect } from "react";
 import NewsList from "./components/NewsList/NewsList";
 import CategoriesMenu from "./components/CategoriesMenu/CategoriesMenu";
-import WeatherWidget from './components/WeatherWidget/WeatherWidget';
+import WeatherWidget from "./components/WeatherWidget/WeatherWidget";
 import { fetchNews } from "./api/fetchNews";
+import { CircularSpinner } from "@/app/components/ui/progress";
 
 export default function Home() {
   const [category, setCategory] = useState("");
@@ -28,10 +29,13 @@ export default function Home() {
 
   return (
     <main className="max-w-8xl mx-auto p-6">
-      <CategoriesMenu currentCategorySlug={category} onCategoryChange={setCategory} />
+      <CategoriesMenu
+        currentCategorySlug={category}
+        onCategoryChange={setCategory}
+      />
 
       {loading ? (
-        <p className="text-center text-gray-500">Loading...</p>
+        <CircularSpinner size={48} strokeWidth={4} fullscreen />
       ) : articles?.length > 0 ? (
         <div className="flex flex-col gap-6">
           {/* Мобільна версія — погода над новинами */}
@@ -39,7 +43,6 @@ export default function Home() {
             <WeatherWidget />
           </div>
 
-          {/* Десктоп версія — новини зліва, погода справа */}
           <div className="hidden md:flex gap-12 justify-center">
             <div className="w-3/4">
               <NewsList articles={articles} />
@@ -49,7 +52,6 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Мобільна версія — новини під погодою */}
           <div className="md:hidden w-full">
             <NewsList articles={articles} />
           </div>
