@@ -7,57 +7,64 @@ import WeatherWidget from "./components/WeatherWidget/WeatherWidget";
 import { fetchNews } from "./api/fetchNews";
 import { CircularSpinner } from "@/app/components/ui/progress";
 
+interface Article {
+  title: string;
+  description?: string;
+  url: string;
+  urlToImage?: string;
+  source: { name: string };
+  publishedAt: string;
+  category?: string;
+}
+
 export default function Home() {
   const [category, setCategory] = useState("");
-  const [articles, setArticles] = useState([]);
+  const [articles, setArticles] = useState<Article[]>([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const loadNews = async () => {
-      try {
-        const data = await fetchNews(category);
-        setArticles(data);
-      } catch (error) {
-        setArticles([]);
-      } finally {
-        setLoading(false);
-      }
-    };
+  const loadNews = async (categorySlug: string) => {
+    setLoading(true);
+    try {
+      const data = await fetchNews(categorySlug);
+      setArticles(data);
+    } catch (error) {
+      console.error("Помилка при завантаженні новин:", error);
+      setArticles([]);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    loadNews();
+  useEffect(() => {
+    loadNews(category);
   }, [category]);
 
+  const hasNews = articles.length > 0;
+
   return (
-    <main className="max-w-8xl mx-auto p-6">
-      <CategoriesMenu
-        currentCategorySlug={category}
-        onCategoryChange={setCategory}
-      />
+    <main className="relative max-w-8xl mx-auto p-2 mb:p-6">
+      <CategoriesMenu currentCategorySlug={category} onCategoryChange={setCategory} />
 
       {loading ? (
         <CircularSpinner size={48} strokeWidth={4} fullscreen />
-      ) : articles?.length > 0 ? (
-        <div className="flex flex-col gap-6">
-          {/* Мобільна версія — погода над новинами */}
-          <div className="w-full md:hidden mb-6">
-            <WeatherWidget />
-          </div>
-
-          <div className="hidden md:flex gap-12 justify-center">
-            <div className="w-3/4">
-              <NewsList articles={articles} />
-            </div>
-            <div className="">
+      ) : hasNews ? (
+        <div className="relative flex justify-center">
+          {/* Основний блок новин по центру */}
+          <div className="w-full ">
+            {/* Mobile: погода зверху */}
+            <div className="md:hidden mb-6">
               <WeatherWidget />
             </div>
-          </div>
 
-          <div className="md:hidden w-full">
             <NewsList articles={articles} />
           </div>
+
+          <aside className="hidden md:block absolute right-0 top-0 w-72">
+            <WeatherWidget />
+          </aside>
         </div>
       ) : (
-        <p className="text-center text-gray-500">No news available</p>
+        <p className="text-center text-gray-500">No news</p>
       )}
     </main>
   );

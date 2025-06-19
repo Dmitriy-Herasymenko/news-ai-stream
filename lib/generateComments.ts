@@ -33,7 +33,6 @@ export async function generateCommentsCohereChat(articleTitle?: string, articleS
 
   if (!rawComments || rawComments.length === 0) return [];
 
-  // Запитуємо стільки фейкових користувачів, скільки коментарів
   const userRes = await fetch(`https://randomuser.me/api/?results=${rawComments.length}&nat=us,gb,ua`);
   const userData = await userRes.json();
 
