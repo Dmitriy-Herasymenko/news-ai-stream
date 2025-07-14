@@ -6,6 +6,8 @@ import CategoriesMenu from "./components/CategoriesMenu/CategoriesMenu";
 import WeatherWidget from "./components/WeatherWidget/WeatherWidget";
 import { fetchNews } from "./api/fetchNews";
 import { CircularSpinner } from "@/app/components/ui/progress";
+import { useNewsStore } from "@/app/stores/newsStore";
+
 
 interface Article {
   title: string;
@@ -18,17 +20,25 @@ interface Article {
 }
 
 export default function Home() {
-  const [category, setCategory] = useState("");
+  // const [category, setCategory] = useState("");
   const [articles, setArticles] = useState<Article[]>([]);
   const [loading, setLoading] = useState(true);
+
+  const category = useNewsStore((state) => state.category);
+  const setCategory = useNewsStore((state) => state.setCategory);
+
+  useEffect(() => {
+    console.log("Вибрана категорія:", category);
+  }, [category]);
 
   const loadNews = async (categorySlug: string) => {
     setLoading(true);
     try {
       const data = await fetchNews(categorySlug);
-      setArticles(data);
+      const filteredData = data.filter((news: any) => news.source?.id);
+      setArticles(filteredData);
     } catch (error) {
-      console.error("Помилка при завантаженні новин:", error);
+      console.error("Error loading news:", error);
       setArticles([]);
     } finally {
       setLoading(false);
@@ -49,9 +59,7 @@ export default function Home() {
         <CircularSpinner size={48} strokeWidth={4} fullscreen />
       ) : hasNews ? (
         <div className="relative flex justify-center">
-          {/* Основний блок новин по центру */}
           <div className="w-full ">
-            {/* Mobile: погода зверху */}
             <div className="md:hidden mb-6">
               <WeatherWidget />
             </div>

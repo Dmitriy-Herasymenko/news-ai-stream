@@ -21,7 +21,6 @@ interface NewsListProps {
 export default function NewsList({ articles }: NewsListProps) {
   const [searchQuery, setSearchQuery] = useState("");
 
-  // filterSearch
   const filteredArticles = useMemo(() => {
     const query = searchQuery.toLowerCase();
     return articles.filter(
@@ -32,7 +31,7 @@ export default function NewsList({ articles }: NewsListProps) {
   }, [articles, searchQuery]);
 
   return (
-    <div className="bg-white min-h-screen px-4 md:px-8">
+    <div className="bg-white dark:bg-black min-h-screen px-4 md:px-8 text-gray-900 dark:text-gray-100">
       {/* Search */}
       <div className="max-w-6xl mx-auto mb-6">
         <Input
@@ -41,12 +40,13 @@ export default function NewsList({ articles }: NewsListProps) {
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           aria-label="Search for news..."
+          className="bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-gray-600 placeholder-gray-400 dark:placeholder-gray-500"
         />
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
         {filteredArticles.length === 0 && (
-          <p className="col-span-full text-center text-gray-500">
+          <p className="col-span-full text-center text-gray-500 dark:text-gray-400">
             No news found.
           </p>
         )}

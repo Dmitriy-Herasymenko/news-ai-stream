@@ -1,3 +1,6 @@
+
+
+
 export async function fetchNews(category?: string) {
   let url = `/api/news`;
   if (category) {

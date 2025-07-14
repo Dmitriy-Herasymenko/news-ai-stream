@@ -32,7 +32,7 @@ export function NewsCard({ article, index }: NewsCardProps) {
       className={clsx(
         "group flex flex-col rounded-lg overflow-hidden border hover:shadow-md transition",
         spanClass,
-        darkBackground ? "bg-black text-white" : "bg-white"
+        darkBackground ? "bg-black  text-white" : "bg-white dark:bg-[#1A1A1A]"
       )}
     >
       {article.urlToImage && (
@@ -49,7 +49,7 @@ export function NewsCard({ article, index }: NewsCardProps) {
         <h3
           className={clsx(
             "text-lg font-bold group-hover:underline",
-            darkBackground ? "text-white" : "text-black"
+            darkBackground ? "text-white" : "text-black dark:text-gray-100"
           )}
         >
           {article.title}
@@ -57,7 +57,7 @@ export function NewsCard({ article, index }: NewsCardProps) {
         <p
           className={clsx(
             "text-sm mt-2 line-clamp-3",
-            darkBackground ? "text-gray-300" : "text-gray-600"
+            darkBackground ? "text-gray-300" : "text-gray-600 dark:text-gray-300"
           )}
         >
           {article.description}
@@ -65,7 +65,7 @@ export function NewsCard({ article, index }: NewsCardProps) {
         <div
           className={clsx(
             "text-xs mt-4 flex flex-col gap-1",
-            darkBackground ? "text-gray-400" : "text-gray-500"
+            darkBackground ? "text-gray-400" : "text-gray-500 dark:text-gray-400"
           )}
         >
           <Badge variant={darkBackground ? "gray400" : "gray500"}>

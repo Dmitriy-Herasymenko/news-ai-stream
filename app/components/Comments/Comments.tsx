@@ -39,7 +39,7 @@ if (loading) {
         return (
           <li
             key={i}
-            className={`flex flex-col items-center p-6 border border-gray-300 rounded-lg shadow-sm bg-white hover:shadow-lg transition-shadow duration-300
+            className={`flex flex-col items-center p-6 border border-gray-300 rounded-lg shadow-sm  hover:shadow-lg transition-shadow duration-300
               ${isLong ? "w-full" : "w-full sm:w-[48%] lg:w-[30%]"}`}
           >
             <img
@@ -48,12 +48,12 @@ if (loading) {
               className="w-16 h-16 rounded-full object-cover mb-4 border-2 border-red-600"
             />
             <p className="font-semibold text-red-700 mb-2 text-center">{name}</p>
-            <p className="text-gray-700 text-center">{comment}</p>
+            <p className="text-gray-700 dark:text-gray-100 text-center">{comment}</p>
           </li>
         );
       })}
     </ul>
   ) : (
-    <p className="text-gray-500 italic">No comments yet</p>
+    <p className="text-gray-500 dark:text-gray-100 italic">No comments yet</p>
   );
 }

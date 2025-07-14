@@ -30,3 +30,4 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Translation failed' }, { status: 500 });
   }
 }
+              
