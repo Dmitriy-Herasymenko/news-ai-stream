@@ -24,6 +24,8 @@ export default function Home() {
   const [articles, setArticles] = useState<Article[]>([]);
   const [loading, setLoading] = useState(true);
 
+  const country = useNewsStore((state) => state.country);
+  const setCountry = useNewsStore((state) => state.setCountry);
   const category = useNewsStore((state) => state.category);
   const setCategory = useNewsStore((state) => state.setCategory);
 
@@ -31,26 +33,32 @@ export default function Home() {
     console.log("Вибрана категорія:", category);
   }, [category]);
 
-  const loadNews = async (categorySlug: string) => {
-    setLoading(true);
-    try {
-      const data = await fetchNews(categorySlug);
-      const filteredData = data.filter((news: any) => news.source?.id);
-      setArticles(filteredData);
-    } catch (error) {
-      console.error("Error loading news:", error);
-      setArticles([]);
-    } finally {
-      setLoading(false);
-    }
-  };
+ const loadNews = async (categorySlug: string, country: string) => {
+  setLoading(true);
+  try {
+    const data = await fetchNews(categorySlug, country);
+
+    // Якщо це категорія "ua", залишаємо все як є
+    const filteredData =
+      country === "ua"
+        ? data
+        : data.filter((news: any) => news.source?.id);
+
+    setArticles(filteredData);
+  } catch (error) {
+    console.error("Error loading news:", error);
+    setArticles([]);
+  } finally {
+    setLoading(false);
+  }
+};
 
   useEffect(() => {
-    loadNews(category);
-  }, [category]);
+    loadNews(category, country);
+  }, [category, country]);
 
   const hasNews = articles.length > 0;
-
+console.log("Articles loaded:", articles);
   return (
     <main className="relative max-w-8xl mx-auto p-2 mb:p-6">
       <CategoriesMenu currentCategorySlug={category} onCategoryChange={setCategory} />
@@ -60,16 +68,14 @@ export default function Home() {
       ) : hasNews ? (
         <div className="relative flex justify-center">
           <div className="w-full ">
-            <div className="md:hidden mb-6">
-              <WeatherWidget />
-            </div>
+    
 
             <NewsList articles={articles} />
           </div>
 
-          <aside className="hidden md:block absolute right-0 top-0 w-72">
+          {/* <aside className="hidden md:block absolute right-0 top-0 w-72">
             <WeatherWidget />
-          </aside>
+          </aside> */}
         </div>
       ) : (
         <p className="text-center text-gray-500">No news</p>

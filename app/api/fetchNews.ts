@@ -1,16 +1,30 @@
+export async function fetchNews(category?: string, country?: string) {
 
 
+  if (country === "ua") {
+    const res = await fetch("/api/ukraine-news");
+    console.log("resus", res)
+    if (!res.ok) {
+      throw new Error("Failed to fetch Ukrainian news");
+    }
 
-export async function fetchNews(category?: string) {
+    const data = await res.json();
+    return data.articles;
+  }
+
   let url = `/api/news`;
-  if (category) {
-    url += `?category=${category}`;
+  const params = new URLSearchParams();
+
+  if (category) params.append("category", category);
+  if (country) params.append("country", country);
+
+  if (params.toString()) {
+    url += `?${params.toString()}`;
   }
 
   const res = await fetch(url);
-
   if (!res.ok) {
-    throw new Error('Failed to fetch news');
+    throw new Error("Failed to fetch news");
   }
 
   const data = await res.json();

@@ -2,10 +2,13 @@
 import { notFound } from "next/navigation";
 import ClientCommentsWrapper from "../../components/ClientCommentsWrapper";
 import { Card, CardContent } from "@/app/components/ui/card";
+import TTSButton from "@/app/components/TTSButton/TTSButton";
+
 
 interface ArticleDetailProps {
   params: { id: string };
 }
+
 
 async function fetchNewsDetail(id: string) {
   const res = await fetch(
@@ -53,6 +56,7 @@ export default async function NewsDetail({ params }: ArticleDetailProps) {
         {article.title}
       </h1>
 
+
       {article.urlToImage && (
         <img
           src={article.urlToImage}
@@ -64,6 +68,7 @@ export default async function NewsDetail({ params }: ArticleDetailProps) {
       <p className="mb-6 leading-relaxed">
         {article.content?.replace(/\s*\[\+\d+\s*chars\]$/, "") || article.description}
       </p>
+       <TTSButton text={`${article.title}. ${article.content || ''}`} />
 
       <div className="text-sm text-muted-foreground mb-10">
         Source: <span className="font-semibold">{article.source.name}</span> — {new Date(article.publishedAt).toLocaleString()}

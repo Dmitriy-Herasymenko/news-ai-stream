@@ -54,19 +54,20 @@ export default function WeatherWidget() {
   if (!weather) return <div className="text-sm text-red-500">No weather data</div>;
 
   return (
-    <div className="bg-[#f5f5f5] border-t-4 border-red-600 shadow-md p-4 max-w-[450px]">
-      <h3 className="text-xl font-bold text-black uppercase mb-3 border-b border-gray-300 pb-1">
-        Weather: {weather.city}
-      </h3>
-      <div className="flex items-center gap-4">
-        <img
+    <div className="flex gap-2 items-center">
+      <h3 className="flex gap-2 items-center">
+                <img
           src={`https://openweathermap.org/img/wn/${weather.icon}@2x.png`}
           alt="weather icon"
-          className="w-16 h-16"
+          className="w-6 h-6"
         />
+      {weather.city}
+      </h3>
+      <div className="flex">
+
         <div>
-          <div className="text-3xl font-extrabold text-black">{weather.temperature}°C</div>
-          <div className="capitalize text-base text-gray-800">{weather.description}</div>
+          <div className="">{weather.temperature}°C</div>
+          {/* <div className="capitalize text-base text-gray-800">{weather.description}</div> */}
         </div>
       </div>
     </div>

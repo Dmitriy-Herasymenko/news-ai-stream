@@ -36,7 +36,6 @@ export async function fetchTopHeadlinesAndTranslate(): Promise<Article[]> {
   const testTranslation = await translateTextToUkrCohere("Hello world");
   console.log("Test translation result:", testTranslation);
 
-  // Перекладаємо перші 5 новин (заголовок і опис)
   const translatedArticles = await Promise.all(
     data.articles.slice(0, 5).map(async (article) => {
       const translatedTitle = await translateTextToUkrCohere(article.title);

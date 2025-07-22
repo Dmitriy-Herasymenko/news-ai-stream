@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import ThemeToggle from "./components/ThemeToggle/ThemeToggle";
+import WeatherWidget from "./components/WeatherWidget/WeatherWidget";
+
 
 import "./globals.css";
 
@@ -35,7 +37,8 @@ export default function RootLayout({
           dark:bg-black dark:text-gray-100
         `}
       >
-        <header className="p-4 flex justify-end">
+        <header className="p-4 flex justify-between">
+          <WeatherWidget />
           <ThemeToggle />
         </header>
         <main className="max-w-7xl mx-auto px-4">
