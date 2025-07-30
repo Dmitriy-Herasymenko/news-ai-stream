@@ -149,7 +149,7 @@ export default async function NewsDetail({ params }: ArticleDetailProps) {
                 <img
                   src={news.urlToImage}
                   alt={news.title}
-                  className="w-full h-40 object-cover"
+                  className="w-full h-40 object-cover" 
                 />
               )}
               <CardContent className="p-4">
