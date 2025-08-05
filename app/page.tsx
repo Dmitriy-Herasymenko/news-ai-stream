@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import NewsList from "./components/NewsList/NewsList";
 import CategoriesMenu from "./components/CategoriesMenu/CategoriesMenu";
-import WeatherWidget from "./components/WeatherWidget/WeatherWidget";
+
 import { fetchNews } from "./api/fetchNews";
 import { CircularSpinner } from "@/app/components/ui/progress";
 import { useNewsStore } from "@/app/stores/newsStore";
@@ -38,7 +38,6 @@ export default function Home() {
   try {
     const data = await fetchNews(categorySlug, country);
 
-    // Якщо це категорія "ua", залишаємо все як є
     const filteredData =
       country === "ua"
         ? data
