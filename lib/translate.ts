@@ -12,6 +12,7 @@ export async function translateText(text?: any, targetLang?: any): Promise<strin
     }
   
     const data = await res.json();
+    console.log(`Translation result:`, data.translatedText);
     return data.translatedText;
   }
   

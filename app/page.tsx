@@ -25,7 +25,6 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
 
   const country = useNewsStore((state) => state.country);
-  const setCountry = useNewsStore((state) => state.setCountry);
   const category = useNewsStore((state) => state.category);
   const setCategory = useNewsStore((state) => state.setCategory);
 
@@ -57,7 +56,6 @@ export default function Home() {
   }, [category, country]);
 
   const hasNews = articles.length > 0;
-console.log("Articles loaded:", articles);
   return (
     <main className="relative max-w-8xl mx-auto p-2 mb:p-6">
       <CategoriesMenu currentCategorySlug={category} onCategoryChange={setCategory} />
