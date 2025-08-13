@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { Input } from "@/app/components/ui/input";
 import { NewsCard } from "@/app/components/ui/newsCard";
+import { useNewsStore } from "@/app/stores/newsStore";
 
 interface Article {
   title: string;
@@ -20,6 +21,7 @@ interface NewsListProps {
 
 export default function NewsList({ articles }: NewsListProps) {
   const [searchQuery, setSearchQuery] = useState("");
+  const country = useNewsStore((state) => state.country);
 
   const filteredArticles = useMemo(() => {
     const query = searchQuery.toLowerCase();
@@ -51,7 +53,7 @@ export default function NewsList({ articles }: NewsListProps) {
           </p>
         )}
         {filteredArticles.map((article, i) => (
-          <NewsCard key={i} article={article} index={i} />
+          <NewsCard key={i} article={article} index={i} country={country} />
         ))}
       </div>
     </div>

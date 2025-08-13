@@ -16,9 +16,10 @@ interface Article {
 interface NewsCardProps {
   article: Article;
   index: number;
+  country?: string;
 }
 
-export function NewsCard({ article, index }: NewsCardProps) {
+export function NewsCard({ article, index, country }: NewsCardProps) {
   const randomCommentsCount = Math.floor(Math.random() * 50);
 
   const spanClass =
@@ -28,7 +29,10 @@ export function NewsCard({ article, index }: NewsCardProps) {
 
   return (
     <Link
-      href={`/news/${encodeURIComponent(article.title)}`}
+      href={{
+        pathname: `/news/${encodeURIComponent(article.title)}`,
+        query: { country: country }
+      }}
       className={clsx(
         "group flex flex-col rounded-lg overflow-hidden border hover:shadow-md transition",
         spanClass,

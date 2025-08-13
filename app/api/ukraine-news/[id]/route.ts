@@ -16,7 +16,6 @@ const feeds = [
   "https://rss.unian.net/site/news_ukr.rss",
 ];
 
-// Мапа українських категорій до твоїх
 const categoryMap: any = {
   "економіка": "business",
   "бізнес": "business",
@@ -47,35 +46,29 @@ function detectEncoding(xmlSample: string): string {
 
 async function extractOgImageFromPage(url: string): Promise<string> {
   try {
-    const res = await fetch(url, {
-      headers: { "User-Agent": "Mozilla/5.0" },
-    });
+    const res = await fetch(url, { headers: { "User-Agent": "Mozilla/5.0" } });
     const html = await res.text();
     const $ = load(html);
-    const ogImage = $('meta[property="og:image"]').attr("content");
-    return ogImage || "";
+    return $('meta[property="og:image"]').attr("content") || "";
   } catch (e) {
     console.warn("OG image fetch failed for:", url);
     return "";
   }
 }
 
-export async function GET(req: Request) {
+export async function GET(req: Request, { params }: { params: { id: string } }) {
   try {
+    const requestedId = params.id; // тепер шукатимемо по id
     const allNews: any[] = [];
 
     for (const url of feeds) {
-      const res = await fetch(url, {
-        headers: { "User-Agent": "Mozilla/5.0 (RSS Parser)" },
-      });
-
+      const res = await fetch(url, { headers: { "User-Agent": "Mozilla/5.0 (RSS Parser)" } });
       const buffer = await res.arrayBuffer();
       const buf = Buffer.from(buffer);
-      const xmlUtf8 = buf.toString("utf8");
-      const encoding = detectEncoding(xmlUtf8);
+      const encoding = detectEncoding(buf.toString("utf8"));
       const decoded = iconv.decode(buf, encoding);
-
       const json = parser.parse(decoded);
+
       const items = json.rss?.channel?.item || [];
       const sourceTitle = he.decode(json.rss?.channel?.title || "");
 
@@ -108,21 +101,11 @@ export async function GET(req: Request) {
               ? item.category
               : [];
 
-          // Лог для перегляду категорій з фіда
-          console.log("Raw categories from feed item:", rawCategories);
-
-          const decodedCategories = rawCategories.map((cat: string) =>
-            he.decode(cat)
-          );
-
-          console.log("Decoded categories:", decodedCategories);
-
+          const decodedCategories = rawCategories.map((cat: string) => he.decode(cat));
           const normalizedCategories = mapCategory(decodedCategories);
 
-          console.log("Mapped categories:", normalizedCategories);
-
           return {
-            id: generateUniqueId(),
+            id: generateUniqueId(), // тут точно створюється унікальний id
             title: he.decode(item.title || ""),
             link: item.link || "",
             pubDate: item.pubDate || "",
@@ -140,33 +123,16 @@ export async function GET(req: Request) {
       allNews.push(...parsedItems);
     }
 
-    allNews.sort(
-      (a, b) => new Date(b.pubDate).getTime() - new Date(a.pubDate).getTime()
-    );
+    // Шукаємо новину по id
+    const newsItem = allNews.find((article) => article.id === requestedId);
 
-    const { searchParams } = new URL(req.url);
-    const filterCategory = searchParams.get("category")?.toLowerCase();
-
-    console.log("Filter category from query:", filterCategory);
-
-    // Якщо немає категорії — повертаємо всі новини
-    if (!filterCategory) {
-      return NextResponse.json({ articles: allNews });
+    if (!newsItem) {
+      return NextResponse.json({ error: "Not found" }, { status: 404 });
     }
 
-    // Фільтрація: шукаємо збіги по includes (часткове співпадіння)
-    const filteredNews = allNews.filter((item) =>
-      item.categories.some((cat: string) => cat.includes(filterCategory))
-    );
-
-    console.log("Filtered news count:", filteredNews.length);
-
-    return NextResponse.json({ articles: filteredNews });
+    return NextResponse.json(newsItem);
   } catch (error) {
     console.error("RSS fetching error:", error);
-    return NextResponse.json(
-      { error: "Не вдалося завантажити новини" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Не вдалося завантажити новини" }, { status: 500 });
   }
 }

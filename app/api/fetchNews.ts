@@ -1,10 +1,9 @@
 export async function fetchNews(category?: string, country?: string) {
 
-
   if (country === "ua") {
-      const params = new URLSearchParams();
-  if (category) params.append("category", category);
-  const res = await fetch(`/api/ukraine-news?${params.toString()}`);
+    const params = new URLSearchParams();
+    if (category) params.append("category", category);
+    const res = await fetch(`/api/ukraine-news?${params.toString()}`);
     if (!res.ok) {
       throw new Error("Failed to fetch Ukrainian news");
     }

@@ -32,24 +32,25 @@ export default function Home() {
     console.log("Вибрана категорія:", category);
   }, [category]);
 
- const loadNews = async (categorySlug: string, country: string) => {
-  setLoading(true);
-  try {
-    const data = await fetchNews(categorySlug, country);
+  const loadNews = async (categorySlug: string, country: string) => {
+    setLoading(true);
+    try {
+      const data = await fetchNews(categorySlug, country);
 
-    const filteredData =
-      country === "ua"
-        ? data
-        : data.filter((news: any) => news.source?.id);
+      const filteredData =
+        country === "ua"
+          ? data
+          : data.filter((news: any) => news.source?.id);
+        console.log("Filtered news data ua:", filteredData);
 
-    setArticles(filteredData);
-  } catch (error) {
-    console.error("Error loading news:", error);
-    setArticles([]);
-  } finally {
-    setLoading(false);
-  }
-};
+      setArticles(filteredData);
+    } catch (error) {
+      console.error("Error loading news:", error);
+      setArticles([]);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
     loadNews(category, country);
@@ -65,7 +66,7 @@ export default function Home() {
       ) : hasNews ? (
         <div className="relative flex justify-center">
           <div className="w-full ">
-    
+
 
             <NewsList articles={articles} />
           </div>

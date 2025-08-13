@@ -3,14 +3,40 @@ import { notFound } from "next/navigation";
 import ClientCommentsWrapper from "../../components/ClientCommentsWrapper";
 import { Card, CardContent } from "@/app/components/ui/card";
 import TTSButton from "@/app/components/TTSButton/TTSButton";
+import { fetchNews } from "@/app/api/fetchNews";
+import { headers } from "next/headers";
+
 
 
 interface ArticleDetailProps {
   params: { id: string };
+    searchParams?: { country?: string };
 }
 
 
-async function fetchNewsDetail(id: string) {
+async function fetchNewsDetail( 
+  id?: string, 
+  country?: string, 
+  idUANews?: string
+) {
+  // Для українських новин
+  if (country === "ua") {
+ const headersList = await headers(); // <- тут await
+    const host = headersList.get("host"); 
+    const protocol = headersList.get("x-forwarded-proto") || "http";
+    const baseUrl = `${protocol}://${host}`;
+    
+    const url = `${baseUrl}/api/ukraine-news`;
+    const res = await fetch(url);
+    if (!res.ok) {
+      throw new Error("Failed to fetch Ukrainian news");
+    }
+
+    const data = await res.json();
+    console.log("Ukrainian news data:", data);
+  }
+
+  // Англійські новини
   const res = await fetch(
     `https://newsapi.org/v2/everything?q=${id}&apiKey=${process.env.NEWS_API_KEY}`,
     { cache: "no-store" }
@@ -18,6 +44,7 @@ async function fetchNewsDetail(id: string) {
   const data = await res.json();
   return data.articles?.[0] || null;
 }
+
 
 async function fetchRelatedNews(query: string) {
   const res = await fetch(
@@ -37,11 +64,18 @@ async function fetchRecommendedNews() {
   return data.articles || [];
 }
 
-export default async function NewsDetail({ params }: ArticleDetailProps) {
-  const { id } = params;
+
+export default async function NewsDetail({ params, searchParams }: { params: { id: string }, searchParams?: { country?: string }}) {
+
+  const id = params.id;
+
+
   if (!id) return notFound();
 
-  const article = await fetchNewsDetail(id);
+  const country = searchParams?.country;
+  console.log("Country from search params:", country);
+
+  const article = await fetchNewsDetail(id, country);
   if (!article) return notFound();
 
   const relatedNews = await fetchRelatedNews(article.title);
